@@ -1,5 +1,5 @@
 export const initialiseData = (uniqueChoices, votes) => {
-  let data = new Array();
+  const data = [];
   for (let i = 1; i <= uniqueChoices; ++i) {
     data.push({ amt: 0 });
   }

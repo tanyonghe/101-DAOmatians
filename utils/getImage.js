@@ -1,4 +1,4 @@
-import { DEFAULT_AVATAR_URL } from "../constants/homepage";
+import DEFAULT_AVATAR_URL from "../constants/constants";
 
 export const getImage = (imageUrl) => {
   if (!imageUrl) {

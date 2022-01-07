@@ -5,9 +5,9 @@ export const aggregateProposals = (proposals) => {
   const data = {};
   proposals.forEach((proposal) => {
     const winningScore = Math.max(...proposal.scores);
-    if (!winningScore)
-      return; // if winningScore is 0, then proposal is invalid
-    const percentage = Math.round((winningScore / proposal.scores_total) * 1000) / 1000; // 3 d.p.
+    if (!winningScore) return; // if winningScore is 0, then proposal is invalid
+    const percentage =
+      Math.round((winningScore / proposal.scores_total) * 1000) / 1000; // 3 d.p.
     if (!data[percentage]) {
       data[percentage] = 0;
     }
@@ -17,7 +17,7 @@ export const aggregateProposals = (proposals) => {
   return Object.keys(data)
     .sort()
     .map((key) => ({
-      percentage: key,
+      percentage: (key * 100).toFixed(1) + "%",
       amount: data[key],
     }));
 };

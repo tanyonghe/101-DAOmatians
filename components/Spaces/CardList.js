@@ -38,13 +38,6 @@ const CardList = () => {
     );
   }
 
-  const scrollwheelHandler = () => {
-    if (outerListRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = outerListRef.current;
-      console.log(scrollTop, scrollHeight, clientHeight);
-    }
-  };
-
   const filterFunction = (id) => {
     switch (category) {
       case "spaces":
@@ -86,7 +79,6 @@ const CardList = () => {
         overflowY={"auto"}
         justifyContent={"center"}
         ref={outerListRef}
-        onWheel={scrollwheelHandler}
       >
         {Object.keys(data.spaces)
           .filter(filterFunction)

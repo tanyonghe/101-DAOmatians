@@ -1,14 +1,5 @@
 import { Center, CircularProgress, Text } from "@chakra-ui/react";
 import { gql } from "graphql-request";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import useSWR from "swr";
 import { aggregateProposals } from "../../utils/aggregateProposals";
 import CardChart from "./CardChart";
@@ -53,7 +44,7 @@ const ProposalsChart = ({ id }) => {
       values={values}
       xDataKey={"percentage"}
       yDataKey={"amount"}
-      yDomain={["0.5", "1.0"]}
+      yDomain={["dataMin", "dataMax"]}
       xDomain={["dataMin", "dataMax"]}
     />
   );

@@ -1,4 +1,11 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Tooltip,
+} from "@chakra-ui/react";
 import FollowsChart from "./FollowsChart";
 import ProposalsChart from "./ProposalsChart";
 
@@ -6,8 +13,18 @@ const SpaceCharts = ({ id }) => {
   return (
     <Tabs isFitted variant="enclosed" w={"full"} h={"full"}>
       <TabList>
-        <Tab>followers</Tab>
-        <Tab>proposals</Tab>
+        <Tooltip
+          label="member activity over 7 days"
+          aria-label="tooltip for graph showing member activity over 7 days"
+        >
+          <Tab>members</Tab>
+        </Tooltip>
+        <Tooltip
+          label="lifetime proposals consensus percentage"
+          aria-label="tooltip for graph showing lifetime proposals consensus percentage"
+        >
+          <Tab>proposals</Tab>
+        </Tooltip>
       </TabList>
       <TabPanels h={"full"}>
         <TabPanel h={"full"} p={0}>
