@@ -13,6 +13,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { DEFAULT_AVATAR_URL } from "../constants/homepage";
 import FollowsChart from "./FollowsChart";
+import { getImage } from "../utils/getImage";
 
 const voteQuery = (id) => gql`
   {
@@ -38,7 +39,7 @@ export default function Card({ space }) {
   const [hover, setHover] = useState(false);
   const { data, error } = useSWR(hover ? followsQuery(space.id) : null);
   let imageUrl = getImage(space.avatar);
-  
+
   return (
     <Center py={12} maxW={"xs"} w={"full"}>
       <Box
