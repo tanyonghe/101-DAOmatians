@@ -37,19 +37,13 @@ const Proposals = ({ id }) => {
   if (error) return <div>error</div>;
   if (!data)
     return (
-      <Box
-        padding="6"
-        spacing={3}
-        height="50vh"
-        fontSize="6xl"
-        fontWeight="bold"
-      >
+      <Box padding={6} spacing={3} fontSize="6xl" fontWeight="bold">
         Loading Proposals...
       </Box>
     );
   const proposals = data.proposals;
   return (
-    <List padding="6" spacing={3} height="50vh" sx={{ overflowY: "scroll" }}>
+    <List padding={6} spacing={3} height="100%">
       {proposals.map((proposal) => {
         return <ProposalCard key={proposal.id} proposal={proposal} />;
       })}

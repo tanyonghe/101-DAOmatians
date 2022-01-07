@@ -73,12 +73,13 @@ const Space = ({ space }) => {
   return (
     <SimpleGrid>
       <SimpleGrid
-        height="28vh"
+        height="100%"
         marginX={10}
+        paddingX={4}
         paddingTop={10}
         paddingBottom={2}
         boxShadow="2xl"
-        marginBottom="4vh"
+        marginBottom={8}
       >
         <Box>
           <Image

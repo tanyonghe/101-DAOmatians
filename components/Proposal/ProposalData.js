@@ -2,6 +2,8 @@ import { gql } from "graphql-request";
 import { Box, SimpleGrid, CircularProgress, Tooltip } from "@chakra-ui/react";
 import useSWR from "swr";
 import ProposalChart from "./ProposalChart";
+import { initialiseData } from "../../utils/proposal/initialiseData";
+import { getCloseness } from "../../utils/proposal/getCloseness";
 const ProposalData = ({ id }) => {
   const votesQueryFromProposal = gql`
     {
@@ -26,20 +28,24 @@ const ProposalData = ({ id }) => {
   const votes = data.votes;
   const uniqueVotes = [...new Set(votes.map((vote) => vote.voter))].length;
   const totalVP = votes.reduce((acc, vote) => acc + vote.vp, 0);
+  const uniqueChoices = [...new Set(votes.map((vote) => vote.choice))].length;
+  const data2 = initialiseData(uniqueChoices, votes);
+  const checkCloseness = getCloseness(data2, totalVP);
   return (
-    <SimpleGrid columns={4} fontWeight="bold">
-      <ProposalChart votes={votes} />
-      <Tooltip label="Total Vote Participation" placement="top-start">
-        <Box>
-          <Box>Total VP:</Box>
-          <Box fontSize="3xl">{totalVP.toFixed(2)}</Box>
-        </Box>
-      </Tooltip>
+    <SimpleGrid columns={[2, 2, 4, 4, 4]} fontWeight="bold" padding={4}>
+      <ProposalChart data={data2} />
+      <Box>
+        <Box>Closeness:</Box>
+        <Box fontSize="3xl">{checkCloseness}</Box>
+      </Box>
       <Box>
         <Box>Unique Votes:</Box>
         <Box fontSize="3xl">{uniqueVotes}</Box>
       </Box>
-      <Box>{}</Box>
+      <Box>
+        <Box>Total Vote Participation:</Box>
+        <Box fontSize="3xl">{totalVP.toFixed(2)}</Box>
+      </Box>
     </SimpleGrid>
   );
 };
