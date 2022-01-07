@@ -1,20 +1,16 @@
-import { Box } from "@chakra-ui/react";
+import { Box, CircularProgress } from "@chakra-ui/react";
 import { gql } from "graphql-request";
 import useSWR from "swr";
 import Card from "./Card";
 
 const spacesQuery = gql`
   {
-    spaces(orderBy: "members", orderDirection: desc) {
+    spaces(orderBy: "members", orderDirection: desc, where: {id: "uniswap"}) {
       id
       name
       about
       network
       symbol
-      strategies {
-        name
-        params
-      }
       admins
       members
       avatar
@@ -22,7 +18,6 @@ const spacesQuery = gql`
         minScore
         onlyMembers
       }
-      plugins
     }
   }
 `;
@@ -31,8 +26,13 @@ const CardList = () => {
   const { data, error } = useSWR(spacesQuery, { revalidateOnFocus: false });
   //   actual data queried on snapshot main page
   //   const { data, error } = useSWR("explore", restFetcher);
-  if (error) return <div>error</div>;
-  if (!data) return <div>loading...</div>;
+  if (error) return <div>Error</div>;
+  if (!data)
+    return (
+      <Box display={"flex"} justifyContent={"center"}>
+        <CircularProgress isIndeterminate mt={5} />
+      </Box>
+    );
 
   return (
     <Box display={"flex"} flexWrap={"wrap"} gap={4} justifyContent={"center"}>
