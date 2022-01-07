@@ -1,10 +1,11 @@
-import React from "react";
+import React from 'react';
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { Flex, Center, VStack, StackDivider, Text } from '@chakra-ui/react'
 import { Image, Button, Box, ButtonGroup  } from '@chakra-ui/react'
 import { Popover, PopoverTrigger, PopoverContent, PopoverHeader , PopoverArrow , PopoverCloseButton , PopoverBody, PopoverFooter } from '@chakra-ui/react'
-
+import useSWR from 'swr';
+import { gql } from 'graphql-request';
 
 const DynamicVotesChart = dynamic(() =>
   import('../../../components/VotesChart').then((mod) => mod.VotesChart)
@@ -17,9 +18,50 @@ const Proposal = () => {
 
   const initialFocusRef = React.useRef()
 
+  const URL = "https://hub.snapshot.org/graphql";
+
+  const votesQuery = gql`
+  {
+    votes(first: 10, skip: 0, where: {voter: "0xd26a3f686d43f2a62ba9eae2ff77e9f516d945b9"}, orderBy: "created", orderDirection: desc) {
+      id
+      voter
+      created
+      proposal {
+        id
+      }
+      choice
+      space {
+        id
+      }
+    }
+  }
+`;
+
+  const { data, error } = useSWR(votesQuery, { revalidateOnFocus: false });
+
+  console.log(data)
+
+
   return (
     <div>
-      <Text>Porposal</Text>
+      <Center>
+        <Text>Proposal</Text>
+      </Center>
+
+      <Flex>
+        <Center flex='1'>
+          <Text>
+            <Center>Number of Unique Voters</Center>
+            <Center>{'137'}</Center>
+          </Text>
+        </Center>
+        <Center flex='1'>
+          <Text>
+            <Center>Total Proposal Voting Power</Center>
+            <Center>{'3.5 billion'}</Center>
+          </Text> 
+        </Center>
+      </Flex>
 
       <Flex color='white'>
         <Center flex='1'>
@@ -34,7 +76,7 @@ const Proposal = () => {
 
             <Popover
               initialFocusRef={initialFocusRef}
-              placement='bottom'
+              placement='left'
               closeOnBlur={false}
             >
               <PopoverTrigger>
@@ -47,35 +89,19 @@ const Proposal = () => {
               </PopoverTrigger>
               <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
                 <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
+                  Latest 10 Votes:
                 </PopoverHeader>
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
+                  <div>{data ? data.votes.map((vote) => <li>{vote.space.id}</li>) : 'loading...'}</div>
                 </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
               </PopoverContent>
             </Popover>
 
             <Popover
               initialFocusRef={initialFocusRef}
-              placement='bottom'
+              placement='left'
               closeOnBlur={false}
             >
               <PopoverTrigger>
@@ -88,35 +114,19 @@ const Proposal = () => {
               </PopoverTrigger>
               <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
                 <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
+                  Latest 10 Votes:
                 </PopoverHeader>
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
+                  <div>{data ? data.votes.map((vote) => <li>{vote.space.id}</li>) : 'loading...'}</div>
                 </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
               </PopoverContent>
             </Popover>
 
             <Popover
               initialFocusRef={initialFocusRef}
-              placement='bottom'
+              placement='left'
               closeOnBlur={false}
             >
               <PopoverTrigger>
@@ -129,119 +139,70 @@ const Proposal = () => {
               </PopoverTrigger>
               <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
                 <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
+                  Latest 10 Votes:
                 </PopoverHeader>
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
+                  <div>{data ? data.votes.map((vote) => <li>{vote.space.id}</li>) : 'loading...'}</div>
                 </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
               </PopoverContent>
             </Popover>
 
             <Popover
               initialFocusRef={initialFocusRef}
-              placement='bottom'
+              placement='left'
               closeOnBlur={false}
             >
               <PopoverTrigger>
                 <Image
                   borderRadius='full'
                   boxSize='100px'
-                  src='/static/images/3.png'
-                  alt='Top Voters - 3rd'
+                  src='/static/images/1.png'
+                  alt='Top Voters - 4th'
                 />
               </PopoverTrigger>
               <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
                 <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
+                  Latest 10 Votes:
                 </PopoverHeader>
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
+                  <div>{data ? data.votes.map((vote) => <li>{vote.space.id}</li>) : 'loading...'}</div>
                 </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
               </PopoverContent>
             </Popover>
 
             <Popover
               initialFocusRef={initialFocusRef}
-              placement='bottom'
+              placement='left'
               closeOnBlur={false}
             >
               <PopoverTrigger>
                 <Image
                   borderRadius='full'
                   boxSize='100px'
-                  src='/static/images/3.png'
-                  alt='Top Voters - 3rd'
+                  src='/static/images/2.png'
+                  alt='Top Voters - 5th'
                 />
               </PopoverTrigger>
               <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
                 <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
+                  Latest 10 Votes:
                 </PopoverHeader>
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
+                  <div>{data ? data.votes.map((vote) => <li>{vote.space.id}</li>) : 'loading...'}</div>
                 </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
               </PopoverContent>
             </Popover>
 
           </VStack>
         </Center>
       </Flex>
-      <p>Space: {space}</p>
-      <p>Proposal: {proposal}</p>
+
     </div>
   )
 }
