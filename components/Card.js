@@ -7,18 +7,10 @@ import {
   Stack,
   Image,
 } from "@chakra-ui/react";
-import { DEFAULT_AVATAR_URL } from "../constants/homepage";
+import { getImage } from "./getImage";
 
 export default function Card({ space }) {
-  let imageUrl = space.avatar;
-  if (!imageUrl) {
-    imageUrl = DEFAULT_AVATAR_URL;
-  }
-  if (imageUrl.startsWith("ipfs://")) {
-    const [_, id] = imageUrl.split("ipfs://");
-    imageUrl = "https://cloudflare-ipfs.com/ipfs/" + id;
-  }
-
+  let imageUrl = getImage(space.avatar);
   return (
     <Center py={12} maxW={"xs"} w={"full"}>
       <Box
