@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { ListItem, List, Box, Badge, SimpleGrid } from "@chakra-ui/react";
+import { List, Box } from "@chakra-ui/react";
 import { gql } from "graphql-request";
 import ProposalCard from "./ProposalCard";
 
@@ -17,16 +17,10 @@ const Proposals = ({ id }) => {
     ) {
       id
       title
-      body
-      choices
-      start
-      end
-      snapshot
       state
       author
       space {
         id
-        name
       }
     }
   }

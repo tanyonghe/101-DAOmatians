@@ -1,4 +1,4 @@
-import { ListItem, List, Box, Badge, SimpleGrid } from "@chakra-ui/react";
+import { ListItem, Box, Badge, SimpleGrid } from "@chakra-ui/react";
 import ProposalData from "./ProposalData";
 import Link from "next/link";
 
@@ -11,7 +11,6 @@ const ProposalCard = ({ proposal }) => {
       marginTop={8}
     >
       <Box
-        key={proposal.id}
         paddingX={2}
         paddingY={4}
         width={["100%", "100%", "100%", "50%", "60%"]}

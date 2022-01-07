@@ -44,7 +44,7 @@ const ProposalData = ({ id }) => {
       </Box>
       <Box>
         <Box>Total Vote Participation:</Box>
-        <Box fontSize="3xl">{totalVP.toFixed(2)}</Box>
+        <Box fontSize="lg">{totalVP.toFixed(2)}</Box>
       </Box>
     </SimpleGrid>
   );
