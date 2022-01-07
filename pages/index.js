@@ -1,6 +1,5 @@
-import { Box, Container } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import Head from "next/head";
-import Card from "../components/Card";
 import CardList from "../components/CardList";
 
 export default function Home() {
@@ -13,7 +12,7 @@ export default function Home() {
       </Head>
 
       <main>
-        Test
+        DAO list
         <CardList />
       </main>
     </Container>
