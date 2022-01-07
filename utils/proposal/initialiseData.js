@@ -5,13 +5,17 @@ export const initialiseData = (uniqueChoices, votes) => {
   }
   if (!uniqueChoices) return data;
   votes.forEach((vote) => {
+    console.log(vote, uniqueChoices);
     if (Array.isArray(vote.choice)) {
       vote.choice.forEach((v) => {
-        console.log(v, data[v - 1]);
         return (data[v - 1].amt += vote.vp);
       });
     } else {
-      if (typeof vote.choice === "object" && !vote.choice) return;
+      if (
+        (typeof vote.choice === "object" && !vote.choice) ||
+        (typeof vote.choice === "object" && vote.choice !== null)
+      )
+        return;
       data[vote.choice - 1].amt += vote.vp;
     }
   });

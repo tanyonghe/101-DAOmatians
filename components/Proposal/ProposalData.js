@@ -1,5 +1,5 @@
 import { gql } from "graphql-request";
-import { Box, SimpleGrid, CircularProgress, Tooltip } from "@chakra-ui/react";
+import { Box, SimpleGrid, CircularProgress, Center } from "@chakra-ui/react";
 import useSWR from "swr";
 import ProposalChart from "./ProposalChart";
 import { initialiseData } from "../../utils/proposal/initialiseData";
@@ -24,7 +24,12 @@ const ProposalData = ({ id }) => {
     revalidateOnFocus: false,
   });
   if (error) return <div>error</div>;
-  if (!data) return <CircularProgress isIndeterminate />;
+  if (!data)
+    return (
+      <Center>
+        <CircularProgress isIndeterminate />
+      </Center>
+    );
   const votes = data.votes;
   const uniqueVotes = [...new Set(votes.map((vote) => vote.voter))].length;
   const totalVP = votes.reduce((acc, vote) => acc + vote.vp, 0);
