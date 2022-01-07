@@ -13,7 +13,7 @@ const ProposalCard = ({ proposal }) => {
           {proposal.state}
         </Badge>
       </Box>
-      <SimpleGrid>
+      <SimpleGrid width="40vw">
         <ProposalData id={proposal.id} />
       </SimpleGrid>
     </ListItem>

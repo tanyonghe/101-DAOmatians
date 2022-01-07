@@ -1,6 +1,7 @@
 import { gql } from "graphql-request";
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid, CircularProgress, Tooltip } from "@chakra-ui/react";
 import useSWR from "swr";
+import ProposalChart from "./ProposalChart";
 const ProposalData = ({ id }) => {
   const votesQueryFromProposal = gql`
     {
@@ -21,17 +22,24 @@ const ProposalData = ({ id }) => {
     revalidateOnFocus: false,
   });
   if (error) return <div>error</div>;
-  if (!data) return <div>loading...</div>;
+  if (!data) return <CircularProgress isIndeterminate />;
   const votes = data.votes;
   const uniqueVotes = [...new Set(votes.map((vote) => vote.voter))].length;
   const totalVP = votes.reduce((acc, vote) => acc + vote.vp, 0);
-  const uniqueChoices = [...new Set(votes.map((vote) => vote.choice))].length;
-  console.log(votes);
   return (
-    <SimpleGrid>
-      <Box>Total VP: {totalVP.toFixed(2)}</Box>
-      <Box>Unique Votes: {uniqueVotes}</Box>
-      <Box>{uniqueChoices}</Box>
+    <SimpleGrid columns={4} fontWeight="bold">
+      <ProposalChart votes={votes} />
+      <Tooltip label="Total Vote Participation" placement="top-start">
+        <Box>
+          <Box>Total VP:</Box>
+          <Box fontSize="3xl">{totalVP.toFixed(2)}</Box>
+        </Box>
+      </Tooltip>
+      <Box>
+        <Box>Unique Votes:</Box>
+        <Box fontSize="3xl">{uniqueVotes}</Box>
+      </Box>
+      <Box>{}</Box>
     </SimpleGrid>
   );
 };

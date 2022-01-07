@@ -35,7 +35,18 @@ const Proposals = ({ id }) => {
     revalidateOnFocus: false,
   });
   if (error) return <div>error</div>;
-  if (!data) return <div>loading...</div>;
+  if (!data)
+    return (
+      <Box
+        padding="6"
+        spacing={3}
+        height="50vh"
+        fontSize="6xl"
+        fontWeight="bold"
+      >
+        Loading Proposals...
+      </Box>
+    );
   const proposals = data.proposals;
   return (
     <List padding="6" spacing={3} height="50vh" sx={{ overflowY: "scroll" }}>

@@ -1,8 +1,15 @@
 import { useRouter } from "next/router";
 import { request, gql } from "graphql-request";
-import { Box, SimpleGrid, ListItem, List, Image } from "@chakra-ui/react";
-import { getImage } from "../components/getImage";
-import Proposals from "../components/Proposals";
+import {
+  Box,
+  SimpleGrid,
+  ListItem,
+  List,
+  Image,
+  CircularProgress,
+} from "@chakra-ui/react";
+import { getImage } from "../utils/getImage";
+import Proposals from "../components/Proposal/Proposals";
 import Votes from "../components/Votes";
 
 const URL = "https://hub.snapshot.org/graphql";
@@ -59,7 +66,7 @@ export const getStaticProps = async ({ params }) => {
 
 const Space = ({ space }) => {
   const router = useRouter();
-  if (router.isFallback) return <h1>Loading...</h1>;
+  if (router.isFallback) return <CircularProgress isIndeterminate />;
   const { symbol, name, about, avatar, id } = space;
 
   const image = getImage(avatar);
