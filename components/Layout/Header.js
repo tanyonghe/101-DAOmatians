@@ -8,18 +8,17 @@ import {
   Text,
   useColorMode,
   useColorModeValue,
-  useDisclosure,
 } from "@chakra-ui/react";
 import Link from "next/link";
 
 export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Container
       as={"header"}
       bg={useColorModeValue("gray.100", "gray.900")}
       maxW={"full"}
+      mb={12}
     >
       <Box px={4} maxW={"8xl"} mx={"auto"}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>

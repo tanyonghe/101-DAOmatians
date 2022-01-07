@@ -9,6 +9,7 @@ import {
 export default function Footer() {
   return (
     <Box
+    mt={12}
       bg={useColorModeValue("gray.100", "gray.900")}
     >
       <Container

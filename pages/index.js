@@ -1,5 +1,5 @@
 import Head from "next/head";
-import CardList from "../components/CardList";
+import CardList from "../components/Spaces/CardList";
 import Layout from "../components/Layout/Layout";
 
 export default function Home() {

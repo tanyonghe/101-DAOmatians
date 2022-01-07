@@ -1,8 +1,8 @@
 import {
   Box,
-  Button,
   Center,
   Heading,
+  IconButton,
   Image,
   Stack,
   Text,
@@ -11,8 +11,9 @@ import {
   useOutsideClick,
 } from "@chakra-ui/react";
 import { gql } from "graphql-request";
-import { DEFAULT_AVATAR_URL } from "../constants/homepage";
-import { getImage } from "../utils/getImage";
+import { DEFAULT_AVATAR_URL } from "../../constants/homepage";
+import { getImage } from "../../utils/getImage";
+import GraphIcon from "./GraphIcon";
 import SpaceCharts from "./SpaceCharts";
 
 const voteQuery = (id) => gql`
@@ -26,17 +27,12 @@ const voteQuery = (id) => gql`
 
 export default function Card({ space, id, outerListRef }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  let imageUrl = getImage(space.avatar);
   useOutsideClick({
     ref: outerListRef,
     handler: onClose,
   });
 
   const textColour = useColorModeValue("gray.600", "gray.300");
-
-  if (!space.followers) {
-    console.log(space);
-  }
 
   return (
     <Center py={12} maxW={"30%"} w={"full"}>
@@ -59,13 +55,13 @@ export default function Card({ space, id, outerListRef }) {
             width={"100px"}
             objectFit={"cover"}
             alt={id + " icon"}
-            src={imageUrl}
+            src={getImage(space.avatar)}
             onError={(e) => {
               e.target.src = DEFAULT_AVATAR_URL;
             }}
           />
         </Box>
-        <Stack pt={3} pb={10} align={"center"} h={"full"}>
+        <Stack pt={3} pb={12} align={"center"} h={"full"}>
           <Text
             color={useColorModeValue("gray.500", "gray.400")}
             fontSize={"sm"}
@@ -81,10 +77,12 @@ export default function Card({ space, id, outerListRef }) {
           ) : (
             <Stack align={"center"} h={"50%"} justifyContent={"space-between"}>
               <Text color={textColour}>{space.about}</Text>
-              <Button onClick={onOpen}>See more!</Button>
+              <IconButton onClick={onOpen} icon={<GraphIcon />} />
             </Stack>
           )}
-          <Text color={"gray.500"}>Members: {space.followers}</Text>
+          <Text color={useColorModeValue("gray.500", "gray.200")} mt={0}>
+            Members: {space.followers}
+          </Text>
         </Stack>
       </Box>
     </Center>
