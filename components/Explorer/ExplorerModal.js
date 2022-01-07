@@ -64,7 +64,7 @@ const ExplorerModalContent = ({
         <Text>id:{modalBody && modalBody.id}</Text>
         {modalContent}
         <ModalFooter>
-          <Button onClick={() => loadNodes(modalBody.type, modalBody.id)}>
+          <Button onClick={() => loadNodes(modalBody.type, modalBody)}>
             Load related
           </Button>
         </ModalFooter>

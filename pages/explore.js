@@ -50,6 +50,32 @@ const votesQuery = (id) => gql`
   }
 `;
 
+const votesQueryWithUser = (id) => gql`
+  {
+    votes(
+      first: 10
+      where: { voter: "${id}" }
+      orderBy: "vp"
+      orderDirection: desc
+    ) {
+      vp
+      choice
+      proposal {
+        id
+        title
+        body
+        scores
+        scores_total
+        choices
+        votes
+        space {
+          id
+        }
+      }
+    }
+  }
+`;
+
 // default configs which are used by DAO icons
 const myConfig = {
   nodeHighlightBehavior: true,
@@ -74,24 +100,19 @@ const Explore = () => {
   const [findSpace, setFindSpace] = useState(false);
   const [proposalIdQuery, setProposalIdQuery] = useState("");
   const [findWhale, setFindWhale] = useState(false);
+  const [userIdQuery, setUserIdQuery] = useState("");
+  const [findProposals, setFindProposals] = useState(false);
   // nodes and links array for graph
   const [nodes, setNodes] = useState([{ id: "Enter the ID of a DAO below!" }]);
   const [links, setLinks] = useState([]);
   const { data: proposalData, error: proposalError } = useSWR(
-    findSpace ? proposalQuery(spaceIdQuery) : null,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
+    findSpace ? proposalQuery(spaceIdQuery) : null
   );
   const { data: votesData, error: votesError } = useSWR(
-    findWhale ? votesQuery(proposalIdQuery) : null,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
+    findWhale ? votesQuery(proposalIdQuery) : null
+  );
+  const { data: userProposalData, error: userProposalError } = useSWR(
+    findProposals ? votesQueryWithUser(userIdQuery) : null
   );
   // modal stuff
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -105,13 +126,35 @@ const Explore = () => {
     onOpen();
   };
 
-  const loadNodes = (nodeType, nodeId) => {
+  const loadNodes = (nodeType, node) => {
     if (nodeType === "proposal") {
-      setProposalIdQuery(nodeId);
+      setProposalIdQuery(node.id);
       setFindWhale(true);
+    }
+    if (nodeType === "user") {
+      setUserIdQuery(node.title);
+      setFindProposals(true);
     }
   };
 
+  const formatProposalData = (proposal) => {
+    const winningScore = Math.max(...proposal.scores);
+    if (!winningScore) return {}; // if winningScore is 0, then proposal is invalid
+    const percentage =
+      Math.round((winningScore / proposal.scores_total) * 1000) / 1000;
+    return {
+      id: proposal.id,
+      type: "proposal",
+      title: proposal.title,
+      body: proposal.body,
+      percentage: percentage,
+      displayName: proposal.title.substr(0, 5) + "...",
+      size: percentage * 200,
+      color: "var(--chakra-colors-gray-600)",
+    };
+  };
+
+  // updating with proposal data from dao
   useEffect(() => {
     if (!proposalError && proposalData && proposalData.proposals.length) {
       setNodes((prev) =>
@@ -124,23 +167,7 @@ const Explore = () => {
               type: "DAO",
             },
             // proposals found from DAO
-            proposalData.proposals.map((proposal) => {
-              const winningScore = Math.max(...proposal.scores);
-              if (!winningScore) return {}; // if winningScore is 0, then proposal is invalid
-              const percentage =
-                Math.round((winningScore / proposal.scores_total) * 1000) /
-                1000;
-              return {
-                id: proposal.id,
-                type: "proposal",
-                title: proposal.title,
-                body: proposal.body,
-                percentage: percentage,
-                displayName: proposal.title.substr(0, 5) + "...",
-                size: percentage * 200,
-                color: "var(--chakra-colors-gray-600)",
-              };
-            })
+            proposalData.proposals.map(formatProposalData)
           )
           .filter(
             (item) =>
@@ -148,7 +175,6 @@ const Explore = () => {
               Object.keys(item).length !== 0
           )
       );
-      console.log(nodes, links);
       // link all proposals to DAO
       setLinks((prev) =>
         prev
@@ -161,24 +187,66 @@ const Explore = () => {
               };
             })
           )
-          .filter(
-            (item) =>
-              item.id !== "Enter the ID of a DAO below!" &&
-              Object.keys(item).length !== 0
-          )
+          .filter((item) => Object.keys(item).length !== 0)
       );
     }
     setFindSpace(false);
   }, [proposalError, proposalData]);
 
+  // updating user proposals data
+  useEffect(() => {
+    if (
+      !userProposalError &&
+      userProposalData &&
+      userProposalData.votes.length
+    ) {
+      setNodes((prev) =>
+        prev
+          .concat(
+            // proposals found from DAO
+            userProposalData.votes.map((vote) =>
+              formatProposalData(vote.proposal)
+            )
+          )
+          .filter((item) => item && Object.keys(item).length !== 0)
+      );
+      // link all proposals to DAO
+      setLinks((prev) =>
+        prev
+          .concat(
+            userProposalData.votes.map((vote) => {
+              if (!vote.proposal.votes) return {};
+              return {
+                source: userIdQuery,
+                target: vote.proposal.id,
+              };
+            }),
+            // unforunately in a rush for time I am looping through the same array twice
+            userProposalData.votes.map((vote) => {
+              if (!vote.proposal.votes) return {};
+              if (vote.proposal.space.id)
+                // TODO need to check for duplicates!
+                return {
+                  source: vote.proposal.space.id,
+                  target: vote.proposal.id,
+                };
+            })
+          )
+          .filter((item) => item && Object.keys(item).length !== 0)
+      );
+    }
+    setFindProposals(false);
+  }, [userProposalError, userProposalData]);
+
+  // updating votes data
   useEffect(() => {
     if (!votesError && votesData && votesData.votes.length) {
       setNodes((prev) =>
         prev.concat(
           votesData.votes.map((vote) => {
             return {
-              id: vote.id,
-              type: "vote",
+              id: vote.voter,
+              type: "user",
               title: vote.voter,
               vp: vote.vp,
               displayName: vote.voter.substr(0, 5) + "...",
@@ -192,7 +260,7 @@ const Explore = () => {
           votesData.votes.map((vote) => {
             return {
               source: proposalIdQuery,
-              target: vote.id,
+              target: vote.voter,
             };
           })
         )
@@ -203,17 +271,6 @@ const Explore = () => {
 
   return (
     <Layout>
-      <Box overflow={"hidden"}>
-        <Graph
-          id="graph-id" // id is mandatory
-          data={{
-            nodes,
-            links,
-          }}
-          config={myConfig}
-          onClickNode={onClickNode}
-        />
-      </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ExplorerModalContent
           loadNodes={loadNodes}
@@ -222,7 +279,7 @@ const Explore = () => {
           onClose={onClose}
         />
       </Modal>
-      <InputGroup>
+      <InputGroup mb={10}>
         <InputLeftElement pointerEvents="none">
           <SearchIcon color="gray.300" />
         </InputLeftElement>
@@ -238,6 +295,17 @@ const Explore = () => {
           </Button>
         </InputRightAddon>
       </InputGroup>
+      <Box overflow={"hidden"}>
+        <Graph
+          id="graph-id" // id is mandatory
+          data={{
+            nodes,
+            links,
+          }}
+          config={myConfig}
+          onClickNode={onClickNode}
+        />
+      </Box>
     </Layout>
   );
 };
