@@ -5,7 +5,6 @@ export const initialiseData = (uniqueChoices, votes) => {
   }
   if (!uniqueChoices) return data;
   votes.forEach((vote) => {
-    console.log(vote, uniqueChoices);
     if (Array.isArray(vote.choice)) {
       vote.choice.forEach((v) => {
         return (data[v - 1].amt += vote.vp);
