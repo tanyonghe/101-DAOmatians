@@ -103,7 +103,7 @@ const Explore = () => {
   const [userIdQuery, setUserIdQuery] = useState("");
   const [findProposals, setFindProposals] = useState(false);
   // nodes and links array for graph
-  const [nodes, setNodes] = useState([{ id: "Enter the ID of a DAO below!" }]);
+  const [nodes, setNodes] = useState([{ id: "Enter the ID of a DAO above!" }]);
   const [links, setLinks] = useState([]);
   const { data: proposalData, error: proposalError } = useSWR(
     findSpace ? proposalQuery(spaceIdQuery) : null
