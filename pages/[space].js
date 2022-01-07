@@ -71,7 +71,7 @@ export const getStaticProps = async ({ params }) => {
   const votesQuery = gql`
   {
     votes(
-      first: 100
+      first: 100000
       skip: 0
       where: {
         space: "${params.space}"
@@ -79,13 +79,7 @@ export const getStaticProps = async ({ params }) => {
       orderBy: "created",
       orderDirection: desc
     ) {
-      id
       voter
-      created
-      choice
-      space {
-        id
-      }
     }
   }
   `;
@@ -112,13 +106,10 @@ const Space = ({ space, proposals, votes }) => {
   if (router.isFallback) return <h1>Loading...</h1>;
   const { symbol, name, about, avatar } = space;
   const image = getImage(avatar);
-  console.log(space);
-  console.log(votes);
-  console.log(proposals);
-  const uniqueVotes = [...new Set(votes.map((vote) => vote.id))];
+  const uniqueVotes = [...new Set(votes.map((vote) => vote.voter))];
   return (
     <SimpleGrid>
-      <SimpleGrid height="32vh" background="yellow" padding={10}>
+      <SimpleGrid height="32vh" padding={10}>
         <Box>
           <Image
             src={image}
@@ -126,32 +117,34 @@ const Space = ({ space, proposals, votes }) => {
             sx={{ display: "inline" }}
             paddingRight="4"
           />
-          <Box fontSize="6xl">{symbol}</Box>
+          <Box fontSize="6xl" sx={{ display: "inline" }}>
+            {symbol}
+          </Box>
         </Box>
         <Box fontSize="3xl">{name}</Box>
         <Box>{about}</Box>
       </SimpleGrid>
-      <SimpleGrid height="16vh" background="pink" paddingX={8} columns={3}>
+      <SimpleGrid height="16vh" paddingX={8} columns={3}>
         <SimpleGrid>
-          <Box fontSize="large">Number of Unique Voters:</Box>
+          <Box fontSize="large" fontWeight="bold">
+            Number of Unique Voters:
+          </Box>
           <Box fontSize="6xl">{uniqueVotes.length}</Box>
         </SimpleGrid>
         <SimpleGrid>
-          <Box fontSize="large">Average Voting Power: </Box>
+          <Box fontSize="large" fontWeight="bold">
+            Average Voting Power:{" "}
+          </Box>
           <Box fontSize="6xl"></Box>
         </SimpleGrid>
         <SimpleGrid>
-          <Box fontSize="large">Voting Power vs Actual Number of People:</Box>
+          <Box fontSize="large" fontWeight="bold">
+            Voting Power vs Actual Number of People:
+          </Box>
           <Box fontSize="6xl"></Box>
         </SimpleGrid>
       </SimpleGrid>
-      <List
-        background="green"
-        padding="6"
-        spacing={3}
-        height="50vh"
-        sx={{ overflowY: "scroll" }}
-      >
+      <List padding="6" spacing={3} height="50vh" sx={{ overflowY: "scroll" }}>
         {proposals.map((proposal) => {
           return (
             <ListItem key={proposal.id}>
