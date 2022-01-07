@@ -10,7 +10,12 @@ import Link from "next/link";
 
 const ProposalCard = ({ proposal }) => {
   const backgroundColour = useColorModeValue("white", "gray.800");
-
+  const getColor = (color) => {
+    if (color === "pending") return "purple.800";
+    if (color === "active") return "green.700";
+    if (color === "closed") return "red.700";
+    return "grey.800";
+  };
   return (
     <ListItem
       boxShadow="xl"
@@ -31,7 +36,12 @@ const ProposalCard = ({ proposal }) => {
           </Link>
         </Box>
         <Box sx={{ display: "inline-block" }}>by: {proposal.author}</Box>
-        <Badge variant="solid" float="right" marginRight={4}>
+        <Badge
+          variant="solid"
+          float="right"
+          marginRight={4}
+          background={getColor(proposal.state)}
+        >
           {proposal.state}
         </Badge>
       </Box>

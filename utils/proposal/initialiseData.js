@@ -10,7 +10,11 @@ export const initialiseData = (uniqueChoices, votes) => {
         return (data[v - 1].amt += vote.vp);
       });
     } else {
-      if (typeof vote.choice === "object" && !vote.choice) return;
+      if (
+        (typeof vote.choice === "object" && !vote.choice) ||
+        (typeof vote.choice === "object" && vote.choice !== null)
+      )
+        return;
       data[vote.choice - 1].amt += vote.vp;
     }
   });
