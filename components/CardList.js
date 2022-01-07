@@ -1,9 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import Card from "./Card";
-
-import useSWR from "swr";
-import gqlFetcher, { restFetcher } from "../utils/fetcher";
 import { gql } from "graphql-request";
+import useSWR from "swr";
+import Card from "./Card";
 
 const spacesQuery = gql`
   {
@@ -30,9 +28,9 @@ const spacesQuery = gql`
 `;
 
 const CardList = () => {
-  const { data, error } = useSWR(spacesQuery, gqlFetcher);
-//   actual data queried on snapshot main page
-//   const { data, error } = useSWR("explore", restFetcher);
+  const { data, error } = useSWR(spacesQuery, { revalidateOnFocus: false });
+  //   actual data queried on snapshot main page
+  //   const { data, error } = useSWR("explore", restFetcher);
   if (error) return <div>error</div>;
   if (!data) return <div>loading...</div>;
 
