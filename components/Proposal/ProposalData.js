@@ -28,7 +28,13 @@ const ProposalData = ({ id }) => {
   const votes = data.votes;
   const uniqueVotes = [...new Set(votes.map((vote) => vote.voter))].length;
   const totalVP = votes.reduce((acc, vote) => acc + vote.vp, 0);
-  const uniqueChoices = [...new Set(votes.map((vote) => vote.choice))].length;
+  const uniqueChoices = Math.max(
+    ...votes.flatMap((x) => {
+      if (typeof x.choice === "object" && x.choice !== null) return 0;
+      if (Array.isArray(x.choice)) return x.choice.flatMap((y) => y);
+      return x.choice;
+    })
+  );
   const data2 = initialiseData(uniqueChoices, votes);
   const checkCloseness = getCloseness(data2, totalVP);
   return (
