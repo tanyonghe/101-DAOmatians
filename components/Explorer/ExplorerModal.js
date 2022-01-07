@@ -37,7 +37,11 @@ const ExplorerModalContent = ({
   if (modalBody) {
     switch (modalBody.type) {
       case "vote":
-        modalContent = <Text>Voting Power: {modalBody.vp}</Text>;
+        modalContent = (
+          <Text>
+            <Text fontWeight={"bold"}>Voting Power:</Text> {modalBody.vp}
+          </Text>
+        );
         break;
       case "proposal":
         modalContent = (

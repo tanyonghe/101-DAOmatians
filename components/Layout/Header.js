@@ -28,8 +28,9 @@ export default function Header() {
                 DAOmations
               </Text>
             </Link>
-            <Flex display={{ base: "none", md: "flex" }} ml={10}>
+            <Flex display={{ base: "none", md: "flex" }} ml={10} gap={8}>
               <Link href="/explore">Explorer</Link>
+              <Link href="/list">List of DAOs</Link>
             </Flex>
           </Flex>
 
