@@ -3,8 +3,7 @@ import { request, gql } from "graphql-request";
 import {
   Box,
   SimpleGrid,
-  ListItem,
-  List,
+  Center,
   Image,
   CircularProgress,
 } from "@chakra-ui/react";
@@ -66,7 +65,12 @@ export const getStaticProps = async ({ params }) => {
 
 const Space = ({ space }) => {
   const router = useRouter();
-  if (router.isFallback) return <CircularProgress isIndeterminate />;
+  if (router.isFallback)
+    return (
+      <Center height="100vh">
+        <CircularProgress isIndeterminate />
+      </Center>
+    );
   const { symbol, name, about, avatar, id } = space;
 
   const image = getImage(avatar);
@@ -88,6 +92,7 @@ const Space = ({ space }) => {
             height="100px"
             marginRight="4"
             sx={{ display: "inline" }}
+            alt={name + "-icon"}
           />
           <Box fontSize="6xl" sx={{ display: "inline" }} fontWeight="bold">
             {symbol}
