@@ -1,37 +1,9 @@
 import { Box, Container } from "@chakra-ui/react";
 import Head from "next/head";
-import useSWR from "swr";
-import fetcher from "../utils/fetcher";
 import Card from "../components/Card";
-import { gql } from "graphql-request";
-
-const spacesQuery = gql`
-  {
-    spaces(orderBy: "members", orderDirection: desc) {
-      id
-      name
-      about
-      network
-      symbol
-      strategies {
-        name
-        params
-      }
-      admins
-      members
-      avatar
-      filters {
-        minScore
-        onlyMembers
-      }
-      plugins
-    }
-  }
-`;
+import CardList from "../components/CardList";
 
 export default function Home() {
-  const { isValidating, data, error } = useSWR(spacesQuery, fetcher);
-
   return (
     <Container maxW={"8xl"}>
       <Head>
@@ -42,16 +14,7 @@ export default function Home() {
 
       <main>
         Test
-        <Box
-          display={"flex"}
-          flexWrap={"wrap"}
-          gap={4}
-          justifyContent={"center"}
-        >
-          {!isValidating &&
-            !error &&
-            data.spaces.map((space) => <Card space={space} key={space.id} />)}
-        </Box>
+        <CardList />
       </main>
     </Container>
   );

@@ -9,15 +9,16 @@ import {
 } from "@chakra-ui/react";
 import { DEFAULT_AVATAR_URL } from "../constants/homepage";
 
-export default function ProductSimple({ space }) {
+export default function Card({ space }) {
   let imageUrl = space.avatar;
   if (!imageUrl) {
     imageUrl = DEFAULT_AVATAR_URL;
   }
   if (imageUrl.startsWith("ipfs://")) {
     const [_, id] = imageUrl.split("ipfs://");
-    imageUrl = "https://api.thegraph.com/ipfs/api/v0/cat?arg=" + id;
+    imageUrl = "https://cloudflare-ipfs.com/ipfs/" + id;
   }
+
   return (
     <Center py={12} maxW={"xs"} w={"full"}>
       <Box
@@ -28,7 +29,7 @@ export default function ProductSimple({ space }) {
         rounded={"lg"}
         pos={"relative"}
         w={"full"}
-        height={"300px"}
+        height={"320px"}
         zIndex={1}
       >
         <Box rounded={"lg"} mt={-12} pos={"relative"} height={"100px"}>
@@ -38,21 +39,26 @@ export default function ProductSimple({ space }) {
             height={"100px"}
             width={"100px"}
             objectFit={"cover"}
-            alt={space.symbol + " icon"}
+            alt={space.id + " icon"}
             src={imageUrl}
           />
         </Box>
         <Stack pt={10} align={"center"}>
           <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
-            {space.name}
+            {space.id}
           </Text>
-          <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
-            {space.symbol}
+          <Heading
+            fontSize={"xl"}
+            fontFamily={"body"}
+            fontWeight={500}
+            textAlign={"center"}
+          >
+            {space.name}
           </Heading>
           <Stack direction={"row"} align={"center"}>
             <Text color={"gray.600"}>{space.about}</Text>
           </Stack>
-          <Text>{space.members.length}</Text>
+          <Text color={"gray.500"}>Members: {space.members.length}</Text>
         </Stack>
       </Box>
     </Center>
