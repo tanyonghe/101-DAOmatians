@@ -7,13 +7,17 @@ import {
   Stack,
   Image,
   CircularProgress,
+  Button,
+  useDisclosure,
+  useOutsideClick,
 } from "@chakra-ui/react";
 import { gql } from "graphql-request";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useSWR from "swr";
 import { DEFAULT_AVATAR_URL } from "../constants/homepage";
 import FollowsChart from "./FollowsChart";
 import { getImage } from "../utils/getImage";
+import SpaceCharts from "./SpaceCharts";
 
 const voteQuery = (id) => gql`
   {
@@ -24,24 +28,17 @@ const voteQuery = (id) => gql`
   }
 `;
 
-const followsQuery = (id) => gql`
-  {
-    follows(
-        first: 100000
-      where: { space: "${id}" }
-    ) {
-      created
-    }
-  }
-`;
-
 export default function Card({ space }) {
-  const [hover, setHover] = useState(false);
-  const { data, error } = useSWR(hover ? followsQuery(space.id) : null);
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const cardRef = useRef();
   let imageUrl = getImage(space.avatar);
+  useOutsideClick({
+    ref: cardRef,
+    handler: onClose,
+  });
 
   return (
-    <Center py={12} maxW={"xs"} w={"full"}>
+    <Center py={12} maxW={"30%"} w={"full"} ref={cardRef}>
       <Box
         role={"group"}
         p={6}
@@ -50,10 +47,8 @@ export default function Card({ space }) {
         rounded={"lg"}
         pos={"relative"}
         w={"full"}
-        height={"320px"}
+        height={"400px"}
         zIndex={1}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
       >
         <Box rounded={"lg"} mt={-12} pos={"relative"} height={"100px"}>
           <Image
@@ -66,40 +61,23 @@ export default function Card({ space }) {
             src={imageUrl}
           />
         </Box>
-        {hover && !data ? (
-          <Box
-            display={"flex"}
-            placeContent={"center"}
-            placeItems={"center"}
-            h={"full"}
-          >
-            <CircularProgress isIndeterminate />
-          </Box>
-        ) : hover ? (
-          <FollowsChart follows={data && data.follows} />
-        ) : (
-          <Stack pt={10} align={"center"}>
-            <Text
-              color={"gray.500"}
-              fontSize={"sm"}
-              textTransform={"uppercase"}
-            >
-              {space.id}
-            </Text>
-            <Heading
-              fontSize={"xl"}
-              fontFamily={"body"}
-              fontWeight={500}
-              textAlign={"center"}
-            >
-              {space.name}
-            </Heading>
-            <Stack direction={"row"} align={"center"}>
+        <Stack pt={3} align={"center"} h={"full"}>
+          <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
+            {space.id}
+          </Text>
+          <Heading fontSize={"xl"} fontFamily={"body"} textAlign={"center"}>
+            {space.name}
+          </Heading>
+          {isOpen ? (
+            <SpaceCharts id={space.id} />
+          ) : (
+            <Stack align={"center"}>
               <Text color={"gray.600"}>{space.about}</Text>
+              <Button onClick={onOpen}>See more!</Button>
             </Stack>
-            <Text color={"gray.500"}>Members: {space.members.length}</Text>
-          </Stack>
-        )}
+          )}
+          {/* <Text color={"gray.500"}>Members: {space.members.length}</Text> */}
+        </Stack>
       </Box>
     </Center>
   );

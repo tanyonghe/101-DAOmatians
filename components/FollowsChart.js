@@ -1,7 +1,6 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Center, CircularProgress, Text } from "@chakra-ui/react";
+import { gql } from "graphql-request";
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
   Line,
   LineChart,
@@ -10,10 +9,22 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import useSWR from "swr";
+
+const followsQuery = (id) => gql`
+  {
+    follows(
+        first: 100000
+      where: { space: "${id}" }
+    ) {
+      created
+    }
+  }
+`;
 
 const aggregateFollowers = (followers) => {
   if (!Array.isArray(followers)) {
-    return {};
+    return [];
   }
   const data = {};
   followers.forEach((follower) => {
@@ -26,41 +37,49 @@ const aggregateFollowers = (followers) => {
 
   // convert object of date:follows to array of { date, follows }
   const values = Object.keys(data)
-    .map((key) => ({ date: key, value: data[key] }))
+    .map((key) => ({ date: key, members: data[key] }))
     .reverse();
 
   // cumulative summation of follows
   values.reduce((prev, curr) => {
-    curr.value += prev.value;
+    curr.members += prev.members;
     return curr;
   });
   return values;
 };
 
-const FollowsChart = ({ follows }) => {
-  if (!follows.length)
+const FollowsChart = ({ id }) => {
+  const { data, error } = useSWR(followsQuery(id));
+
+  if (!data) {
+    return (
+      <Center display={"flex"} placeContent={"center"} pt={6}>
+        <CircularProgress isIndeterminate />
+      </Center>
+    );
+  }
+
+  if ((data && !data.follows.length) || error) {
     return (
       <Box>
-        <Text>No followers found!</Text>
+        <Text>No members found!</Text>
       </Box>
     );
+  }
 
   // get last 7 days
-  const values = aggregateFollowers(follows).slice(-7);
-
+  const values = aggregateFollowers(data.follows).slice(-7);
   return (
-    <ResponsiveContainer width="100%" height="80%">
+    <ResponsiveContainer width="100%" height="75%" minHeight={"50px"} minWidth={"50px"}>
       <LineChart
-        // width={260}
-        // height={200}
         data={values}
-        margin={{ top: 20, right: 0, bottom: 0, left: 0 }}
+        margin={{ top: 10, right: 0, bottom: 25, left: 0 }}
       >
-        <Line type="monotone" dataKey="value" stroke="black" />
-        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-        <XAxis dataKey="date" />
+        <Line type="monotone" dataKey="members" stroke="black" />
+        <CartesianGrid stroke="#ccc" strokeDasharray="1 1" />
+        <XAxis dataKey="date" domain={["dataMax - 7", "dataMax"]} />
         <YAxis hide domain={["dataMin", "dataMax"]} />
-        <Tooltip />
+        <Tooltip allowEscapeViewBox={{ x: true, y: true }} />
       </LineChart>
     </ResponsiveContainer>
   );

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { request, gql } from "graphql-request";
 import { Box, SimpleGrid, ListItem, List, Image } from "@chakra-ui/react";
-import { getImage } from "../components/getImage";
+import { getImage } from "../utils/getImage";
 
 const URL = "https://hub.snapshot.org/graphql";
 const fetcher = (query) => request(URL, query);
