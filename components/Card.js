@@ -7,12 +7,13 @@ import {
   Stack,
   Image,
 } from "@chakra-ui/react";
-
-const IMAGE =
-  "https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80";
+import { DEFAULT_AVATAR_URL } from "../constants/homepage";
 
 export default function ProductSimple({ space }) {
   let imageUrl = space.avatar;
+  if (!imageUrl) {
+    imageUrl = DEFAULT_AVATAR_URL;
+  }
   if (imageUrl.startsWith("ipfs://")) {
     const [_, id] = imageUrl.split("ipfs://");
     imageUrl = "https://api.thegraph.com/ipfs/api/v0/cat?arg=" + id;
@@ -51,6 +52,7 @@ export default function ProductSimple({ space }) {
           <Stack direction={"row"} align={"center"}>
             <Text color={"gray.600"}>{space.about}</Text>
           </Stack>
+          <Text>{space.members.length}</Text>
         </Stack>
       </Box>
     </Center>
