@@ -50,8 +50,8 @@ const data = [
 export function VotesChart() {
   return (
     <LineChart
-      width={500}
-      height={300}
+      width={1000}
+      height={600}
       data={data}
       margin={{
         top: 5,
