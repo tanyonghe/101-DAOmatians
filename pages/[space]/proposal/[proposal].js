@@ -6,6 +6,8 @@ import { Image, Button, Box, ButtonGroup  } from '@chakra-ui/react'
 import { Popover, PopoverTrigger, PopoverContent, PopoverHeader , PopoverArrow , PopoverCloseButton , PopoverBody, PopoverFooter } from '@chakra-ui/react'
 import useSWR from 'swr';
 import { gql } from 'graphql-request';
+import Layout from "../../../components/Layout/Layout";
+
 
 const DynamicVotesChart = dynamic(() =>
   import('../../../components/VotesChart').then((mod) => mod.VotesChart)
@@ -43,7 +45,7 @@ const Proposal = () => {
 
 
   return (
-    <div>
+    <Layout>
       <Center>
         <Text>Proposal</Text>
       </Center>
@@ -203,7 +205,7 @@ const Proposal = () => {
         </Center>
       </Flex>
 
-    </div>
+    </Layout>
   )
 }
 
