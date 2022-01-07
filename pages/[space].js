@@ -1,8 +1,15 @@
 import { useRouter } from "next/router";
 import { request, gql } from "graphql-request";
-import { Box, SimpleGrid, ListItem, List, Image } from "@chakra-ui/react";
+import {
+  Box,
+  SimpleGrid,
+  CircularProgress,
+  Image,
+  Center,
+} from "@chakra-ui/react";
 import { getImage } from "../utils/getImage";
-
+import Votes from "../components/Votes";
+import Proposals from "../components/Proposal/Proposals";
 
 const URL = "https://hub.snapshot.org/graphql";
 const fetcher = (query) => request(URL, query);
