@@ -45,7 +45,6 @@ export const getStaticProps = async ({ params }) => {
   `;
 
   const data = await fetcher(spaceQuery);
-  console.log(data, "HELLO WORLD");
   if (!data.space) {
     return {
       notFound: true,
@@ -61,28 +60,38 @@ export const getStaticProps = async ({ params }) => {
 const Space = ({ space }) => {
   const router = useRouter();
   if (router.isFallback) return <h1>Loading...</h1>;
-  const { symbol, name, about, avatar } = space;
+  const { symbol, name, about, avatar, id } = space;
 
   const image = getImage(avatar);
   return (
     <SimpleGrid>
-      <SimpleGrid height="32vh" padding={10}>
+      <SimpleGrid
+        height="28vh"
+        marginX={10}
+        paddingTop={10}
+        paddingBottom={2}
+        boxShadow="2xl"
+        marginBottom="4vh"
+      >
         <Box>
           <Image
+            rounded="lg"
             src={image}
             height="100px"
+            marginRight="4"
             sx={{ display: "inline" }}
-            paddingRight="4"
           />
-          <Box fontSize="6xl" sx={{ display: "inline" }}>
+          <Box fontSize="6xl" sx={{ display: "inline" }} fontWeight="bold">
             {symbol}
           </Box>
         </Box>
-        <Box fontSize="3xl">{name}</Box>
+        <Box fontSize="3xl" fontWeight="bold">
+          {name}
+        </Box>
         <Box>{about}</Box>
       </SimpleGrid>
-      <Votes id={space.id} />
-      <Proposals id={space.id} />
+      <Votes id={id} />
+      <Proposals id={id} />
     </SimpleGrid>
   );
 };

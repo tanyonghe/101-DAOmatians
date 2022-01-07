@@ -1,6 +1,7 @@
 import useSWR from "swr";
-import { ListItem, List, Box } from "@chakra-ui/react";
+import { ListItem, List, Box, Badge, SimpleGrid } from "@chakra-ui/react";
 import { gql } from "graphql-request";
+import ProposalCard from "./ProposalCard";
 
 const Proposals = ({ id }) => {
   const proposalsQuery = gql`
@@ -39,13 +40,7 @@ const Proposals = ({ id }) => {
   return (
     <List padding="6" spacing={3} height="50vh" sx={{ overflowY: "scroll" }}>
       {proposals.map((proposal) => {
-        return (
-          <ListItem key={proposal.id}>
-            <Box>{proposal.title}</Box>
-            <Box>{proposal.state}</Box>
-            <Box>{proposal.author}</Box>
-          </ListItem>
-        );
+        return <ProposalCard key={proposal.id} proposal={proposal} />;
       })}
     </List>
   );
