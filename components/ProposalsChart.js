@@ -63,9 +63,9 @@ const ProposalsChart = ({ id }) => {
 
   if ((data && !data.proposals.length) || error) {
     return (
-      <Box>
-        <Text>No proposals found!</Text>
-      </Box>
+      <Center>
+        <Text pt={4}>No proposals found!</Text>
+      </Center>
     );
   }
 

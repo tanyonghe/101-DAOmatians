@@ -1,4 +1,4 @@
-import { Box, Center, CircularProgress, Text } from "@chakra-ui/react";
+import { Center, CircularProgress, Text } from "@chakra-ui/react";
 import { gql } from "graphql-request";
 import {
   CartesianGrid,
@@ -61,16 +61,21 @@ const FollowsChart = ({ id }) => {
 
   if ((data && !data.follows.length) || error) {
     return (
-      <Box>
-        <Text>No members found!</Text>
-      </Box>
+      <Center>
+        <Text pt={4}>No members found!</Text>
+      </Center>
     );
   }
 
   // get last 7 days
   const values = aggregateFollowers(data.follows).slice(-7);
   return (
-    <ResponsiveContainer width="100%" height="75%" minHeight={"50px"} minWidth={"50px"}>
+    <ResponsiveContainer
+      width="100%"
+      height="75%"
+      minHeight={"50px"}
+      minWidth={"50px"}
+    >
       <LineChart
         data={values}
         margin={{ top: 10, right: 0, bottom: 25, left: 0 }}

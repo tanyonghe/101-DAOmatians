@@ -1,20 +1,16 @@
-import { Container } from "@chakra-ui/react";
 import Head from "next/head";
 import CardList from "../components/CardList";
+import Layout from "../components/Layout/Layout";
 
 export default function Home() {
   return (
-    <Container maxW={"8xl"}>
+    <Layout>
       <Head>
         <title>Hack and Roll 2022</title>
         <meta name="description" content="Done for Hack and Roll 2022" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main>
-        DAO list
-        <CardList />
-      </main>
-    </Container>
+      <CardList />
+    </Layout>
   );
 }

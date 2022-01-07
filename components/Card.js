@@ -1,21 +1,17 @@
 import {
   Box,
-  Center,
-  useColorModeValue,
-  Heading,
-  Text,
-  Stack,
-  Image,
-  CircularProgress,
   Button,
+  Center,
+  Heading,
+  Image,
+  Stack,
+  Text,
+  useColorModeValue,
   useDisclosure,
   useOutsideClick,
 } from "@chakra-ui/react";
 import { gql } from "graphql-request";
-import { useRef, useState } from "react";
-import useSWR from "swr";
 import { DEFAULT_AVATAR_URL } from "../constants/homepage";
-import FollowsChart from "./FollowsChart";
 import { getImage } from "../utils/getImage";
 import SpaceCharts from "./SpaceCharts";
 
@@ -28,17 +24,22 @@ const voteQuery = (id) => gql`
   }
 `;
 
-export default function Card({ space }) {
+export default function Card({ space, id, outerListRef }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const cardRef = useRef();
   let imageUrl = getImage(space.avatar);
   useOutsideClick({
-    ref: cardRef,
+    ref: outerListRef,
     handler: onClose,
   });
 
+  const textColour = useColorModeValue("gray.600", "gray.300");
+
+  if (!space.followers) {
+    console.log(space);
+  }
+
   return (
-    <Center py={12} maxW={"30%"} w={"full"} ref={cardRef}>
+    <Center py={12} maxW={"30%"} w={"full"}>
       <Box
         role={"group"}
         p={6}
@@ -57,26 +58,33 @@ export default function Card({ space }) {
             height={"100px"}
             width={"100px"}
             objectFit={"cover"}
-            alt={space.id + " icon"}
+            alt={id + " icon"}
             src={imageUrl}
+            onError={(e) => {
+              e.target.src = DEFAULT_AVATAR_URL;
+            }}
           />
         </Box>
-        <Stack pt={3} align={"center"} h={"full"}>
-          <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
-            {space.id}
+        <Stack pt={3} pb={10} align={"center"} h={"full"}>
+          <Text
+            color={useColorModeValue("gray.500", "gray.400")}
+            fontSize={"sm"}
+            textTransform={"uppercase"}
+          >
+            {id}
           </Text>
           <Heading fontSize={"xl"} fontFamily={"body"} textAlign={"center"}>
             {space.name}
           </Heading>
           {isOpen ? (
-            <SpaceCharts id={space.id} />
+            <SpaceCharts id={id} />
           ) : (
-            <Stack align={"center"}>
-              <Text color={"gray.600"}>{space.about}</Text>
+            <Stack align={"center"} h={"50%"} justifyContent={"space-between"}>
+              <Text color={textColour}>{space.about}</Text>
               <Button onClick={onOpen}>See more!</Button>
             </Stack>
           )}
-          {/* <Text color={"gray.500"}>Members: {space.members.length}</Text> */}
+          <Text color={"gray.500"}>Members: {space.followers}</Text>
         </Stack>
       </Box>
     </Center>
