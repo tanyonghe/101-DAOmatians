@@ -7,6 +7,7 @@ import {
   Link as ChakraLink,
   Stack,
   Text,
+  Tooltip,
   useColorModeValue,
   useDisclosure,
   useOutsideClick,
@@ -25,6 +26,7 @@ export default function Card({ space, id, outerListRef }) {
   });
 
   const textColour = useColorModeValue("gray.600", "gray.300");
+  const backgroundColour = useColorModeValue("white", "gray.800");
 
   return (
     <Center py={12} maxW={{ base: "90%", md: "60%", lg: "30%" }} w={"full"}>
@@ -84,7 +86,15 @@ export default function Card({ space, id, outerListRef }) {
           ) : (
             <Stack align={"center"} h={"50%"} justifyContent={"space-between"}>
               <Text color={textColour}>{space.about}</Text>
-              <IconButton onClick={onOpen} icon={<GraphIcon />} />
+              <Tooltip label="View trends" placement="top">
+                <IconButton
+                  onClick={onOpen}
+                  icon={<GraphIcon />}
+                  bg={backgroundColour}
+                  w={12}
+                  h={12}
+                />
+              </Tooltip>
             </Stack>
           )}
           <Text color={useColorModeValue("gray.500", "gray.200")} mt={0}>

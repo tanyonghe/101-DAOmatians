@@ -1,5 +1,11 @@
 import useSWR from "swr";
-import { Box, CircularProgress, SimpleGrid, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  CircularProgress,
+  SimpleGrid,
+  Tooltip,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { gql } from "graphql-request";
 
 const votesQuery = (id) => gql`
@@ -33,6 +39,8 @@ const stats = [
 
 const Votes = ({ id }) => {
   const { data, error } = useSWR(votesQuery(id), { revalidateOnFocus: false });
+  const backgroundColour = useColorModeValue("white", "gray.800");
+
   if (error) return <div>error</div>;
   if (!data)
     return (
@@ -45,10 +53,13 @@ const Votes = ({ id }) => {
         {stats.map((stat) => (
           <SimpleGrid
             marginTop={8}
-            boxShadow="2xl"
-            paddingX={4}
+            boxShadow="xl"
+            py={7}
+            px={8}
             key={stat.id}
-            width={["100%", "100%", "100%", "30vw", "30vw"]}
+            gap={8}
+            rounded={"xl"}
+            width={["100%", "100%", "100%", "95%", "95%"]}
           >
             {stat.label ? (
               <Tooltip label={stat.label} placement="top-start">
@@ -72,6 +83,7 @@ const Votes = ({ id }) => {
   const totalVotes = votes.reduce((acc, x) => acc + x.vp, 0);
   const avgVotes = totalVotes / uniqueVotes;
   const ratio = uniqueVotes / totalVotes;
+
   return (
     <SimpleGrid
       height="100%"
@@ -79,49 +91,45 @@ const Votes = ({ id }) => {
       marginX={10}
       columns={[1, 1, 1, 3, 3]}
     >
-      <SimpleGrid
-        marginTop={8}
-        boxShadow="2xl"
-        paddingX={4}
-        width={["100%", "100%", "100%", "30vw", "30vw"]}
-      >
-        <Box>
-          <Box fontSize="large">Number of Unique Voters:</Box>
-          <Box fontSize="6xl">{uniqueVotes}</Box>
-        </Box>
-      </SimpleGrid>
-      <SimpleGrid
-        marginTop={8}
-        boxShadow="2xl"
-        paddingX={4}
-        width={["100%", "100%", "100%", "30vw", "30vw"]}
-      >
-        <Tooltip
-          label="The Average Voting Power by an Individual"
-          placement="top-start"
+      {stats.map((stat) => (
+        <SimpleGrid
+          marginTop={8}
+          boxShadow="xl"
+          py={6}
+          px={8}
+          key={stat.id}
+          gap={8}
+          width={["100%", "100%", "100%", "95%", "95%"]}
+          rounded={"lg"}
+          bg={backgroundColour}
         >
-          <Box>
-            <Box fontSize="large">Average Voting Power:</Box>
-            <Box fontSize="6xl">{avgVotes.toFixed(2)}</Box>
-          </Box>
-        </Tooltip>
-      </SimpleGrid>
-      <SimpleGrid
-        marginTop={8}
-        boxShadow="2xl"
-        paddingX={4}
-        width={["100%", "100%", "100%", "30vw", "30vw"]}
-      >
-        <Tooltip
-          placement="top-start"
-          label="A Measure of how many people are actively participating"
-        >
-          <Box>
-            <Box fontSize="large">Voting Power vs Actual Number of People:</Box>
-            <Box fontSize="6xl">{ratio.toFixed(2)}</Box>
-          </Box>
-        </Tooltip>
-      </SimpleGrid>
+          {stat.label ? (
+            <Tooltip label={stat.label} placement="top-start">
+              <Box>
+                <Box fontSize="large">{stat.name}</Box>
+                <Box fontSize="6xl">
+                  {stat.id === 1
+                    ? uniqueVotes
+                    : stat.id === 2
+                    ? avgVotes.toFixed(2)
+                    : ratio.toFixed(2)}
+                </Box>
+              </Box>
+            </Tooltip>
+          ) : (
+            <Box>
+              <Box fontSize="large">{stat.name}</Box>
+              <Box fontSize="6xl">
+                {stat.id === 1
+                  ? uniqueVotes
+                  : stat.id === 2
+                  ? avgVotes.toFixed(2)
+                  : ratio.toFixed(2)}
+              </Box>
+            </Box>
+          )}
+        </SimpleGrid>
+      ))}
     </SimpleGrid>
   );
 };

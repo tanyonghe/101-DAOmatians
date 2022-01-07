@@ -1,21 +1,31 @@
-import { ListItem, Box, Badge, SimpleGrid } from "@chakra-ui/react";
+import {
+  ListItem,
+  Box,
+  Badge,
+  SimpleGrid,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import ProposalData from "./ProposalData";
 import Link from "next/link";
 
 const ProposalCard = ({ proposal }) => {
+  const backgroundColour = useColorModeValue("white", "gray.800");
+
   return (
     <ListItem
-      boxShadow="2xl"
+      boxShadow="xl"
       display="flex"
       flexDir={["column", "column", "column", "row", "row"]}
       marginTop={8}
+      bg={backgroundColour}
+      rounded={"lg"}
     >
       <Box
-        paddingX={2}
-        paddingY={4}
+        paddingX={6}
+        paddingY={5}
         width={["100%", "100%", "100%", "50%", "60%"]}
       >
-        <Box fontSize="2xl" fontWeight="bold">
+        <Box fontSize="2xl" fontWeight="bold" cursor={"pointer"}>
           <Link href={`/${proposal.space.id}/${proposal.id}`}>
             <a>{proposal.title}</a>
           </Link>

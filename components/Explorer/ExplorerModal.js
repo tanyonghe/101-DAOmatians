@@ -8,7 +8,31 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-const ExplorerModalContent = ({ modalTitle, modalBody, loadNodes }) => {
+const ExplorerModalContent = ({
+  modalTitle,
+  modalBody,
+  loadNodes,
+  onClose,
+}) => {
+  if (modalBody.id === "Enter the ID of a DAO below!") {
+    return (
+      <ModalContent py={4}>
+        <ModalHeader fontSize={"xl"} fontWeight={"bold"}>
+          {modalTitle}
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Text>
+            Try entering the id of a space below, for e.g. ens.eth or
+            gitcoindao.eth
+          </Text>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={onClose}>Close</Button>
+        </ModalFooter>
+      </ModalContent>
+    );
+  }
   let modalContent;
   if (modalBody) {
     switch (modalBody.type) {
@@ -20,7 +44,7 @@ const ExplorerModalContent = ({ modalTitle, modalBody, loadNodes }) => {
           <>
             <Text>{modalBody.body}</Text>
             <br />
-            <Text>Consensus: {modalBody.percentage * 100}%</Text>
+            <Text>Consensus: {(modalBody.percentage * 100).toFixed(1)}%</Text>
           </>
         );
         break;

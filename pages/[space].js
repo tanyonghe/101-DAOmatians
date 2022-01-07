@@ -2,6 +2,7 @@ import {
   Box,
   Center,
   CircularProgress,
+  Flex,
   Image,
   SimpleGrid,
 } from "@chakra-ui/react";
@@ -81,13 +82,12 @@ const Space = ({ space }) => {
         <SimpleGrid
           height="100%"
           marginX={10}
-          paddingTop={10}
           paddingBottom={2}
           marginBottom={8}
         >
-          <Box>
+          <Flex >
             <Image
-              rounded="lg"
+              rounded="full"
               src={image}
               height="100px"
               marginRight="4"
@@ -97,8 +97,8 @@ const Space = ({ space }) => {
             <Box fontSize="6xl" sx={{ display: "inline" }} fontWeight="bold">
               {symbol}
             </Box>
-          </Box>
-          <Box fontSize="3xl" fontWeight="bold">
+          </Flex>
+          <Box fontSize="3xl" fontWeight="bold" mt={3}>
             {name}
           </Box>
           <Box>{about}</Box>

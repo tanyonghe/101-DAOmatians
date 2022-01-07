@@ -1,17 +1,12 @@
 import { SearchIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   Input,
   InputGroup,
   InputLeftElement,
   InputRightAddon,
   Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { gql } from "graphql-request";
@@ -58,7 +53,7 @@ const votesQuery = (id) => gql`
 // default configs which are used by DAO icons
 const myConfig = {
   nodeHighlightBehavior: true,
-  width: 1200,
+  width: 1600,
   height: 600,
   node: {
     color: "var(--chakra-colors-red-200)",
@@ -121,7 +116,6 @@ const Explore = () => {
     if (!proposalError && proposalData && proposalData.proposals.length) {
       setNodes((prev) =>
         prev
-          .filter((item) => item && item.id !== "Enter the ID of a DAO below!")
           .concat(
             // DAO node added with search
             {
@@ -132,7 +126,7 @@ const Explore = () => {
             // proposals found from DAO
             proposalData.proposals.map((proposal) => {
               const winningScore = Math.max(...proposal.scores);
-              if (!winningScore) return; // if winningScore is 0, then proposal is invalid
+              if (!winningScore) return {}; // if winningScore is 0, then proposal is invalid
               const percentage =
                 Math.round((winningScore / proposal.scores_total) * 1000) /
                 1000;
@@ -148,16 +142,29 @@ const Explore = () => {
               };
             })
           )
+          .filter(
+            (item) =>
+              item.id !== "Enter the ID of a DAO below!" &&
+              Object.keys(item).length !== 0
+          )
       );
+      console.log(nodes, links);
       // link all proposals to DAO
       setLinks((prev) =>
         prev
-          .filter((item) => item && item.votes !== 0)
           .concat(
-            proposalData.proposals.map((proposal) => ({
-              source: spaceIdQuery,
-              target: proposal.id,
-            }))
+            proposalData.proposals.map((proposal) => {
+              if (!proposal.votes) return {};
+              return {
+                source: spaceIdQuery,
+                target: proposal.id,
+              };
+            })
+          )
+          .filter(
+            (item) =>
+              item.id !== "Enter the ID of a DAO below!" &&
+              Object.keys(item).length !== 0
           )
       );
     }
@@ -196,20 +203,23 @@ const Explore = () => {
 
   return (
     <Layout>
-      <Graph
-        id="graph-id" // id is mandatory
-        data={{
-          nodes,
-          links,
-        }}
-        config={myConfig}
-        onClickNode={onClickNode}
-      />
+      <Box overflow={"hidden"}>
+        <Graph
+          id="graph-id" // id is mandatory
+          data={{
+            nodes,
+            links,
+          }}
+          config={myConfig}
+          onClickNode={onClickNode}
+        />
+      </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ExplorerModalContent
           loadNodes={loadNodes}
           modalBody={modalBody}
           modalTitle={modalTitle}
+          onClose={onClose}
         />
       </Modal>
       <InputGroup>
