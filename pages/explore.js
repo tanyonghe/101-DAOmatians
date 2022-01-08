@@ -171,7 +171,7 @@ const Explore = () => {
           )
           .filter(
             (item) =>
-              item.id !== "Enter the ID of a DAO below!" &&
+              item.id !== "Enter the ID of a DAO above!" &&
               Object.keys(item).length !== 0
           )
       );
@@ -211,27 +211,52 @@ const Explore = () => {
           .filter((item) => item && Object.keys(item).length !== 0)
       );
       // link all proposals to DAO
+      const tmpEdges = [];
+      userProposalData.votes.forEach((vote) => {
+        if (!vote.proposal.votes) return;
+        // add edge from user to proposals
+        tmpEdges.push({
+          source: userIdQuery,
+          target: vote.proposal.id,
+        });
+
+        // if proposal has space id
+        if (vote.proposal.space && vote.proposal.space.id) {
+          // if space id is not a node yet then add it in
+          if (
+            !nodes.filter(
+              (node) =>
+                node.type === "DAO" && node.id === vote.proposal.space.id
+            ).length
+          ) {
+            setNodes((prev) =>
+              prev.concat([
+                {
+                  id: vote.proposal.space.id,
+                  displayName: vote.proposal.space.id,
+                  type: "DAO",
+                },
+              ])
+            );
+          }
+          // if edge from space to proposal already exist skip, else add
+          if (
+            !links.filter(
+              (link) =>
+                link.source === vote.proposal.space.id &&
+                link.target === vote.proposal.id
+            ).length
+          ) {
+            tmpEdges.push({
+              source: vote.proposal.space.id,
+              target: vote.proposal.id,
+            });
+          }
+        }
+      });
       setLinks((prev) =>
         prev
-          .concat(
-            userProposalData.votes.map((vote) => {
-              if (!vote.proposal.votes) return {};
-              return {
-                source: userIdQuery,
-                target: vote.proposal.id,
-              };
-            }),
-            // unforunately in a rush for time I am looping through the same array twice
-            userProposalData.votes.map((vote) => {
-              if (!vote.proposal.votes) return {};
-              if (vote.proposal.space.id)
-                // TODO need to check for duplicates!
-                return {
-                  source: vote.proposal.space.id,
-                  target: vote.proposal.id,
-                };
-            })
-          )
+          .concat(tmpEdges)
           .filter((item) => item && Object.keys(item).length !== 0)
       );
     }

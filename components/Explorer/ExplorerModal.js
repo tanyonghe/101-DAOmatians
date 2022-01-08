@@ -14,7 +14,7 @@ const ExplorerModalContent = ({
   loadNodes,
   onClose,
 }) => {
-  if (modalBody.id === "Enter the ID of a DAO below!") {
+  if (modalBody.id === "Enter the ID of a DAO above!") {
     return (
       <ModalContent py={4}>
         <ModalHeader fontSize={"xl"} fontWeight={"bold"}>

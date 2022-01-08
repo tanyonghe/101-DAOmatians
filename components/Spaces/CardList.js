@@ -1,15 +1,4 @@
-import { ArrowDownIcon, ArrowUpIcon, SearchIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  InputRightAddon,
-  Select,
-} from "@chakra-ui/react";
+import { Box, Button, CircularProgress, Flex } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import useSWR from "swr";
 import networkIdList from "../../constants/networkIdList";
@@ -37,7 +26,6 @@ const CardList = () => {
       </Box>
     );
   }
-
   const filterFunction = (id) => {
     switch (category) {
       case "spaces":
@@ -48,10 +36,10 @@ const CardList = () => {
         return networkIdList[data.spaces[id].network]
           .toLowerCase()
           .includes(search.toLowerCase());
-      case "plugins":
-        return Object.keys(data.spaces[id].plugins).includes(
-          search.toLowerCase()
-        );
+      // case "plugins":
+      //   return Object.keys(data.spaces[id].plugins).includes(
+      //     search.toLowerCase()
+      //   );
     }
     return !search;
   };
