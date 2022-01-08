@@ -8,51 +8,59 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import _ from 'lodash';
 
-const data = [
-  {
-    name: "Time A",
-    For: 25,
-    Against: 2,
-  },
-  {
-    name: "Time B",
-    For: 35,
-    Against: 5,
-  },
-  {
-    name: "Time C",
-    For: 47,
-    Against: 9,
-  },
-  {
-    name: "Time D",
-    For: 59,
-    Against: 17,
-  },
-  {
-    name: "Time E",
-    For: 76,
-    Against: 22,
-  },
-  {
-    name: "Time F",
-    For: 97,
-    Against: 26,
-  },
-  {
-    name: "Time G",
-    For: 134,
-    Against: 31,
+export function VotesChart(data) {
+  console.log('data', data)
+  const colors = ["#82ca9d", "#f9a597", "#807689", "#1b5776", "#f0abcb", "#2ca388"]
+  var lines = ''
+  let chartData = []
+  if (!_.isEmpty(data.choices)) {
+    const allChoices = [...data.choices]
+    let votesByDate = {};
+    let currHighs = {};
+    allChoices.forEach(function(value) {
+      currHighs[value] = 0.0
+    })
+
+    data.votes.forEach(function(item) {
+      if (_.has(votesByDate, item.day)) {
+        if (_.has(item, 'cum_sum_vp') && _.has(item, 'choice_string')) {
+          votesByDate[item.day][item.choice_string] = parseFloat(item.cum_sum_vp)
+          currHighs[item.choice_string] = parseFloat(item.cum_sum_vp)
+        }
+      }
+      else {
+
+        votesByDate[item.day] = {}
+        allChoices.forEach(function(value) {
+          votesByDate[item.day][value] = currHighs[value]
+        })
+        if (_.has(item, 'cum_sum_vp') && _.has(item, 'choice_string')) {
+          votesByDate[item.day][item.choice_string] = parseFloat(item.cum_sum_vp)
+          currHighs[item.choice_string] = parseFloat(item.cum_sum_vp)
+        }
+      }
+    })
+  for (const [key, value] of Object.entries(votesByDate)) {
+
+    chartData.push({
+      name: key,
+      ...value
+    }) 
   }
-];
+  lines = []
+  allChoices.forEach(function(item, index) {
+    lines.push(<Line type="monotone" dataKey={item} stroke={colors[index]} />)
+})
 
-export function VotesChart() {
+  }
+  
   return (
     <LineChart
       width={1000}
       height={600}
-      data={data}
+      data={chartData}
       margin={{
         top: 5,
         right: 30,
@@ -65,13 +73,7 @@ export function VotesChart() {
       <YAxis />
       <Tooltip />
       <Legend />
-      <Line
-        type="monotone"
-        dataKey="For"
-        stroke="#82ca9d"
-        activeDot={{ r: 8 }}
-      />
-      <Line type="monotone" dataKey="Against" stroke="#f9a597" />
+      {lines ? lines : ''}
     </LineChart>
   );
 }
