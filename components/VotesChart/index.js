@@ -12,11 +12,16 @@ import _ from 'lodash';
 
 export function VotesChart(data) {
   console.log('data', data)
+  let possibleChoices = new Set()
+  data.votes.forEach(function(item) {
+    possibleChoices.add(item.choice_string)
+  })
+
   const colors = ["#82ca9d", "#f9a597", "#807689", "#1b5776", "#f0abcb", "#2ca388"]
   var lines = ''
   let chartData = []
-  if (!_.isEmpty(data.choices)) {
-    const allChoices = [...data.choices]
+  if (!_.isEmpty(possibleChoices)) {
+    const allChoices = [...possibleChoices]
     let votesByDate = {};
     let currHighs = {};
     allChoices.forEach(function(value) {

@@ -33,25 +33,23 @@ const Proposal = () => {
       const decoder = new TextDecoder('utf-8')
       const csv = decoder.decode(result.value) 
       const results = Papa.parse(csv, { header: true })
-      console.log(results.data.length)
       const rows = results.data.filter(item => item.proposal_id && item.proposal_id == proposal) 
+
+      let tempTotalVP = 0.0;       
+      rows.forEach(function(item) {
+        possibleChoices.add(item.choice_string)
+        tempTotalVP += parseFloat(item.vp)
+      })
+      setTotalVP(tempTotalVP)
       setRows(rows)
     }
     getData()  
-    console.log(rows)
-
-    let tempTotalVP = 0.0;       
-    rows.forEach(function(item) {
-      possibleChoices.add(item.choice_string)
-      tempTotalVP += parseFloat(item.vp)
-    })
-    setTotalVP(tempTotalVP)
 
   }, [proposal])
 
-  
 
-  if (!proposal) {
+
+  if (!_.isEmpty(rows) && !_.isEmpty(possibleChoices)) {
     return (
       <Box display={"flex"} justifyContent={"center"}>
         <CircularProgress isIndeterminate mt={5} />
@@ -80,12 +78,6 @@ const Proposal = () => {
   }
 `;
 
-  //const { votesData, error } = useSWR(votesQuery, { revalidateOnFocus: false });
-
-  console.log('rows')
-  console.log(rows)
-
-
   return (
     <Layout>
 
@@ -101,7 +93,7 @@ const Proposal = () => {
 
       <Flex color='white'>
         <Center flex='1'>
-          <DynamicVotesChart votes={rows} choices={possibleChoices} />
+          {<DynamicVotesChart votes={rows} choices={possibleChoices} />}
         </Center>
       </Flex>
 
