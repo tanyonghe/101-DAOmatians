@@ -1,248 +1,111 @@
-import React from "react";
+import React from 'react';
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { Flex, Center, VStack, StackDivider, Text } from '@chakra-ui/react'
-import { Image, Button, Box, ButtonGroup  } from '@chakra-ui/react'
+import { Image, Button, Box, ButtonGroup, CircularProgress  } from '@chakra-ui/react'
 import { Popover, PopoverTrigger, PopoverContent, PopoverHeader , PopoverArrow , PopoverCloseButton , PopoverBody, PopoverFooter } from '@chakra-ui/react'
-
+import useSWR from 'swr';
+import { gql } from 'graphql-request';
+import Layout from "../../../components/Layout/Layout";
+import Papa from 'papaparse'
+import _ from 'lodash';
 
 const DynamicVotesChart = dynamic(() =>
   import('../../../components/VotesChart').then((mod) => mod.VotesChart)
 )
 
-
 const Proposal = () => {
   const router = useRouter()
   const { space, proposal } = router.query
 
-  const initialFocusRef = React.useRef()
+  const [rows, setRows] = React.useState([])
+  const [totalVP, setTotalVP] = React.useState(0.0)
+  const possibleChoices = new Set()  
+
+  React.useEffect(() => {
+    if(!proposal) {
+      return;
+    }
+    async function getData() {
+      const response = await fetch('/static/data/votes_over_time.csv')
+      const reader = response.body.getReader()
+      const result = await reader.read() 
+      const decoder = new TextDecoder('utf-8')
+      const csv = decoder.decode(result.value) 
+      const results = Papa.parse(csv, { header: true })
+      console.log(results.data.length)
+      const rows = results.data.filter(item => item.proposal_id && item.proposal_id == proposal) 
+      setRows(rows)
+    }
+    getData()  
+    console.log(rows)
+
+    let tempTotalVP = 0.0;       
+    rows.forEach(function(item) {
+      possibleChoices.add(item.choice_string)
+      tempTotalVP += parseFloat(item.vp)
+    })
+    setTotalVP(tempTotalVP)
+
+  }, [proposal])
+
+  
+
+  if (!proposal) {
+    return (
+      <Box display={"flex"} justifyContent={"center"}>
+        <CircularProgress isIndeterminate mt={5} />
+      </Box>
+    );
+  }
+
+
+  const URL = "https://hub.snapshot.org/graphql";       
+
+
+  const votesQuery = gql`
+  {
+    votes(first: 10, skip: 0, where: {voter: "0xd26a3f686d43f2a62ba9eae2ff77e9f516d945b9"}, orderBy: "created", orderDirection: desc) {
+      id
+      voter
+      created
+      proposal {
+        id
+      }
+      choice
+      space {
+        id
+      }
+    }
+  }
+`;
+
+  //const { votesData, error } = useSWR(votesQuery, { revalidateOnFocus: false });
+
+  console.log('rows')
+  console.log(rows)
+
 
   return (
-    <div>
-      <Text>Porposal</Text>
+    <Layout>
+
+
+      <Flex>
+        <Center flex='1'>
+          <Text>
+            <Center>Total Proposal Voting Power</Center>
+            <Center>{totalVP}</Center>
+          </Text> 
+        </Center>
+      </Flex>
 
       <Flex color='white'>
         <Center flex='1'>
-          <DynamicVotesChart />
-        </Center>
-        <Center w='200px' bg='tomato'>
-          <VStack
-            spacing={4}
-            align='stretch'
-          >
-          <Text>Top Voters</Text>
-
-            <Popover
-              initialFocusRef={initialFocusRef}
-              placement='bottom'
-              closeOnBlur={false}
-            >
-              <PopoverTrigger>
-                <Image
-                  borderRadius='full'
-                  boxSize='100px'
-                  src='/static/images/1.png'
-                  alt='Top Voters - 1st'
-                />
-              </PopoverTrigger>
-              <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
-                <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
-                </PopoverHeader>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
-                </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
-              </PopoverContent>
-            </Popover>
-
-            <Popover
-              initialFocusRef={initialFocusRef}
-              placement='bottom'
-              closeOnBlur={false}
-            >
-              <PopoverTrigger>
-                <Image
-                  borderRadius='full'
-                  boxSize='100px'
-                  src='/static/images/2.png'
-                  alt='Top Voters - 2nd'
-                />
-              </PopoverTrigger>
-              <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
-                <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
-                </PopoverHeader>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
-                </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
-              </PopoverContent>
-            </Popover>
-
-            <Popover
-              initialFocusRef={initialFocusRef}
-              placement='bottom'
-              closeOnBlur={false}
-            >
-              <PopoverTrigger>
-                <Image
-                  borderRadius='full'
-                  boxSize='100px'
-                  src='/static/images/3.png'
-                  alt='Top Voters - 3rd'
-                />
-              </PopoverTrigger>
-              <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
-                <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
-                </PopoverHeader>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
-                </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
-              </PopoverContent>
-            </Popover>
-
-            <Popover
-              initialFocusRef={initialFocusRef}
-              placement='bottom'
-              closeOnBlur={false}
-            >
-              <PopoverTrigger>
-                <Image
-                  borderRadius='full'
-                  boxSize='100px'
-                  src='/static/images/3.png'
-                  alt='Top Voters - 3rd'
-                />
-              </PopoverTrigger>
-              <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
-                <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
-                </PopoverHeader>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
-                </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
-              </PopoverContent>
-            </Popover>
-
-            <Popover
-              initialFocusRef={initialFocusRef}
-              placement='bottom'
-              closeOnBlur={false}
-            >
-              <PopoverTrigger>
-                <Image
-                  borderRadius='full'
-                  boxSize='100px'
-                  src='/static/images/3.png'
-                  alt='Top Voters - 3rd'
-                />
-              </PopoverTrigger>
-              <PopoverContent color='white' bg='blue.800' borderColor='blue.800'>
-                <PopoverHeader pt={4} fontWeight='bold' border='0'>
-                  Manage Your Channels
-                </PopoverHeader>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <PopoverBody>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore.
-                </PopoverBody>
-                <PopoverFooter
-                  border='0'
-                  d='flex'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  pb={4}
-                >
-                  <Box fontSize='sm'>Step 2 of 4</Box>
-                  <ButtonGroup size='sm'>
-                    <Button colorScheme='green'>Setup Email</Button>
-                    <Button colorScheme='blue' ref={initialFocusRef}>
-                      Next
-                    </Button>
-                  </ButtonGroup>
-                </PopoverFooter>
-              </PopoverContent>
-            </Popover>
-
-          </VStack>
+          <DynamicVotesChart votes={rows} choices={possibleChoices} />
         </Center>
       </Flex>
-      <p>Space: {space}</p>
-      <p>Proposal: {proposal}</p>
-    </div>
+
+    </Layout>
   )
 }
 
