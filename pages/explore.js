@@ -296,7 +296,7 @@ const Explore = () => {
 
   return (
     <Layout>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
         <ExplorerModalContent
           loadNodes={loadNodes}
           modalBody={modalBody}

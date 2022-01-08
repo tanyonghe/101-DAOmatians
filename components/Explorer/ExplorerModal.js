@@ -6,7 +6,9 @@ import {
   ModalFooter,
   ModalHeader,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
+import ReactMarkdown from "react-markdown";
 
 const ExplorerModalContent = ({
   modalTitle,
@@ -14,6 +16,7 @@ const ExplorerModalContent = ({
   loadNodes,
   onClose,
 }) => {
+  const textColour = useColorModeValue("gray.500", "gray.300");
   if (modalBody.id === "Enter the ID of a DAO above!") {
     return (
       <ModalContent py={4}>
@@ -46,7 +49,7 @@ const ExplorerModalContent = ({
       case "proposal":
         modalContent = (
           <>
-            <Text>{modalBody.body}</Text>
+            <ReactMarkdown>{modalBody.body}</ReactMarkdown>
             <br />
             <Text>Consensus: {(modalBody.percentage * 100).toFixed(1)}%</Text>
           </>
@@ -61,7 +64,9 @@ const ExplorerModalContent = ({
       </ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        <Text>id:{modalBody && modalBody.id}</Text>
+        <Text mb={2} color={textColour}>
+          id: {modalBody && modalBody.id}
+        </Text>
         {modalContent}
         <ModalFooter>
           <Button onClick={() => loadNodes(modalBody.type, modalBody)}>
