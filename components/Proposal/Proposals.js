@@ -1,11 +1,12 @@
 import useSWR from "swr";
 import { useState } from "react";
-import { List, Box, Button } from "@chakra-ui/react";
+import { List, Box, Button, CircularProgress, Flex } from "@chakra-ui/react";
 import { gql } from "graphql-request";
 import ProposalCard from "./ProposalCard";
 
 const Proposals = ({ id }) => {
   const [proposalsSkipped, setProposalsSkipped] = useState(0);
+
   const proposalsQuery = gql`
   {
     proposals(
@@ -33,9 +34,9 @@ const Proposals = ({ id }) => {
   if (error) return <div>error</div>;
   if (!data)
     return (
-      <Box padding={6} spacing={3} fontSize="6xl" fontWeight="bold">
-        Loading Proposals...
-      </Box>
+      <Flex padding={6} spacing={3} placeItems={"center"} placeContent={"center"}>
+        <CircularProgress isIndeterminate />
+      </Flex>
     );
   const proposals = data.proposals;
   const onLeftButtonClick = () => {
