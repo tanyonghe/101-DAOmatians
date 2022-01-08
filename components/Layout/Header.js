@@ -25,7 +25,7 @@ export default function Header() {
           <Flex>
             <Link href="/" passHref>
               <Text fontWeight={"600"} fontSize={"lg"} cursor={"pointer"}>
-                DAOmations
+                DAOmatians
               </Text>
             </Link>
             <Flex display={{ base: "none", md: "flex" }} ml={10} gap={8}>
