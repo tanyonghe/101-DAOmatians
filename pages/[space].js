@@ -85,7 +85,7 @@ const Space = ({ space }) => {
           paddingBottom={2}
           marginBottom={8}
         >
-          <Flex >
+          <Flex>
             <Image
               rounded="full"
               src={image}

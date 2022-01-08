@@ -32,8 +32,8 @@ const stats = [
   },
   {
     id: 3,
-    name: "Voting Power vs Actual Number of People:",
-    label: "The Average Voting Power by an Individual",
+    name: "% of Average Voting Power:",
+    label: "The Average Voting Power compared to the Total Voting Power",
   },
 ];
 
@@ -82,7 +82,7 @@ const Votes = ({ id }) => {
   const uniqueVotes = [...new Set(votes.map((vote) => vote.voter))].length;
   const totalVotes = votes.reduce((acc, x) => acc + x.vp, 0);
   const avgVotes = totalVotes / uniqueVotes;
-  const ratio = uniqueVotes / totalVotes;
+  const ratio = (avgVotes / totalVotes) * 100;
 
   return (
     <SimpleGrid
