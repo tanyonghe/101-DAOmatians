@@ -20,7 +20,7 @@ const CardChart = ({ values, yDataKey, xDataKey, xDomain, yDomain }) => {
     >
       <LineChart
         data={values}
-        margin={{ top: 10, right: 0, bottom: 0, left: 0 }}
+        margin={{ top: 10, right: 10, bottom: 0, left: 10 }}
       >
         <Line type="monotone" dataKey={yDataKey} stroke={colours} dot={false}/>
         <XAxis dataKey={xDataKey} domain={xDomain} />

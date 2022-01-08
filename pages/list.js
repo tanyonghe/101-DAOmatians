@@ -1,8 +1,8 @@
 import Head from "next/head";
-import Hero from "../components/Layout/Hero";
+import CardList from "../components/Spaces/CardList";
 import Layout from "../components/Layout/Layout";
 
-export default function Home() {
+export default function List() {
   return (
     <Layout>
       <Head>
@@ -10,7 +10,7 @@ export default function Home() {
         <meta name="description" content="Done for Hack and Roll 2022" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Hero />
+      <CardList />
     </Layout>
   );
 }

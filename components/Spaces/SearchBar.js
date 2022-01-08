@@ -18,8 +18,13 @@ const SearchBar = ({
   sortByMembers,
 }) => {
   return (
-    <Flex mb={8} w={"full"} justifyContent="center">
-      <InputGroup w={"30%"}>
+    <Flex
+      mb={8}
+      w={"full"}
+      justifyContent="center"
+      flexDirection={{ base: "column", md: "row" }}
+    >
+      <InputGroup w={{ base: "80%", md: "40%" }} mx={{ base: "auto", md: "0" }}>
         <InputLeftElement pointerEvents="none">
           <SearchIcon color="gray.300" />
         </InputLeftElement>
@@ -39,13 +44,14 @@ const SearchBar = ({
             <option value="spaces">Spaces</option>
             <option value="network">Networks</option>
             {/* <option value="strategies">Strategies</option> */}
-            <option value="plugins">Plugins</option>
+            {/* <option value="plugins">Plugins</option> */}
           </Select>
         </InputRightAddon>
       </InputGroup>
       <Button
         onClick={() => setSortByMembers((prev) => -prev)}
         ml={6}
+        m={{ base: "16px auto", md: "0 0 0 20px" }}
         rightIcon={sortByMembers === 1 ? <ArrowDownIcon /> : <ArrowUpIcon />}
       >
         Sort by Members

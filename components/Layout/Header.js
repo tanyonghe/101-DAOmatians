@@ -22,11 +22,17 @@ export default function Header() {
     >
       <Box px={4} maxW={"8xl"} mx={"auto"}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <Link href="/" passHref>
-            <Text fontWeight={"600"} fontSize={"lg"} cursor={"pointer"}>
-              DAOmations
-            </Text>
-          </Link>
+          <Flex>
+            <Link href="/" passHref>
+              <Text fontWeight={"600"} fontSize={"lg"} cursor={"pointer"}>
+                DAOmations
+              </Text>
+            </Link>
+            <Flex display={{ base: "none", md: "flex" }} ml={10} gap={8}>
+              <Link href="/explore">Explorer</Link>
+              <Link href="/list">List of DAOs</Link>
+            </Flex>
+          </Flex>
 
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>

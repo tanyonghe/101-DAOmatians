@@ -1,15 +1,17 @@
-import { useRouter } from "next/router";
-import { request, gql } from "graphql-request";
 import {
   Box,
-  SimpleGrid,
-  CircularProgress,
-  Image,
   Center,
+  CircularProgress,
+  Flex,
+  Image,
+  SimpleGrid,
 } from "@chakra-ui/react";
-import { getImage } from "../utils/getImage";
-import Votes from "../components/Votes";
+import { gql, request } from "graphql-request";
+import { useRouter } from "next/router";
+import Layout from "../components/Layout/Layout";
 import Proposals from "../components/Proposal/Proposals";
+import Votes from "../components/Votes";
+import { getImage } from "../utils/getImage";
 
 const URL = "https://hub.snapshot.org/graphql";
 const fetcher = (query) => request(URL, query);
@@ -75,37 +77,36 @@ const Space = ({ space }) => {
 
   const image = getImage(avatar);
   return (
-    <SimpleGrid>
-      <SimpleGrid
-        height="100%"
-        marginX={10}
-        paddingX={4}
-        paddingTop={10}
-        paddingBottom={2}
-        boxShadow="2xl"
-        marginBottom={8}
-      >
-        <Box>
-          <Image
-            rounded="lg"
-            src={image}
-            height="100px"
-            marginRight="4"
-            sx={{ display: "inline" }}
-            alt={name + "-icon"}
-          />
-          <Box fontSize="6xl" sx={{ display: "inline" }} fontWeight="bold">
-            {symbol}
+    <Layout>
+      <SimpleGrid>
+        <SimpleGrid
+          height="100%"
+          marginX={10}
+          paddingBottom={2}
+          marginBottom={8}
+        >
+          <Flex >
+            <Image
+              rounded="full"
+              src={image}
+              height="100px"
+              marginRight="4"
+              sx={{ display: "inline" }}
+              alt={name + "-icon"}
+            />
+            <Box fontSize="6xl" sx={{ display: "inline" }} fontWeight="bold">
+              {symbol}
+            </Box>
+          </Flex>
+          <Box fontSize="3xl" fontWeight="bold" mt={3}>
+            {name}
           </Box>
-        </Box>
-        <Box fontSize="3xl" fontWeight="bold">
-          {name}
-        </Box>
-        <Box>{about}</Box>
+          <Box>{about}</Box>
+        </SimpleGrid>
+        <Votes id={id} />
+        <Proposals id={id} />
       </SimpleGrid>
-      <Votes id={id} />
-      <Proposals id={id} />
-    </SimpleGrid>
+    </Layout>
   );
 };
 
