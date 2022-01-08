@@ -21,7 +21,7 @@ export default function Footer() {
         justify={{ base: "center", md: "space-between" }}
         align={{ base: "center", md: "center" }}
       >
-        <Text>© 2022 DAOmations. All rights reserved</Text>
+        <Text>© 2022 DAOmatians. All rights reserved</Text>
       </Container>
     </Box>
   );
