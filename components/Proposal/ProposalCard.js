@@ -31,7 +31,7 @@ const ProposalCard = ({ proposal }) => {
         width={["100%", "100%", "100%", "50%", "60%"]}
       >
         <Box fontSize="2xl" fontWeight="bold" cursor={"pointer"}>
-          <Link href={`/${proposal.space.id}/${proposal.id}`}>
+          <Link href={`/${proposal.space.id}/proposal/${proposal.id}`}>
             <a>{proposal.title}</a>
           </Link>
         </Box>
